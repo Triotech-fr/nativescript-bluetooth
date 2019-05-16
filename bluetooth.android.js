@@ -514,8 +514,7 @@ Bluetooth.startScanning = function (arg) {
         }
       };
 
-      // log a warning when on Android M and no permission has been granted (it's up to the dev to implement that flow though)
-      if (!Bluetooth._coarseLocationPermissionGranted()) {
+      if (arg.skipPermissionCheck !== true && !Bluetooth._coarseLocationPermissionGranted()) {
         Bluetooth._requestCoarseLocationPermission();
       } else {
         _onPermissionGranted();
@@ -603,6 +602,7 @@ Bluetooth.connect = function (arg) {
           onDisconnected: arg.onDisconnected,
           device: bluetoothGatt // TODO rename device to gatt?
         };
+        resolve();
       }
     } catch (ex) {
       console.log("Error in Bluetooth.connect: " + ex);
@@ -828,9 +828,8 @@ Bluetooth.writeWithoutResponse = function (arg) {
       bluetoothGattCharacteristic.setValue(val);
       bluetoothGattCharacteristic.setWriteType(android.bluetooth.BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
 
-      if (wrapper.gatt.writeCharacteristic(bluetoothGattCharacteristic)) {
-        resolve();
-      } else {
+      Bluetooth._connections[arg.peripheralUUID].onWritePromise = resolve;
+      if (!wrapper.gatt.writeCharacteristic(bluetoothGattCharacteristic)) {
         reject("Failed to write to characteristic " + arg.characteristicUUID);
       }
     } catch (ex) {

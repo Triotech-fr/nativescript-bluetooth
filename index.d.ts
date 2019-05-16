@@ -19,6 +19,14 @@ declare module "nativescript-bluetooth" {
      * This callback is invoked when a peripheral is found.
      */
     onDiscovered: (data: Peripheral) => void;
+
+    /**
+     * Set this to true if you don't want the plugin to check (and request) the required Bluetooth permissions.
+     * Particularly useful if you're running this function on a non-UI thread (ie. a Worker).
+     *
+     * Android only.
+     */
+    skipPermissionCheck: boolean;
   }
 
   /**
@@ -65,7 +73,10 @@ declare module "nativescript-bluetooth" {
      */
     name: string;
 
-    // state: string; // TODO not sure we'll keep this, so not adding it here for now
+    /**
+     * A human readable state
+     */
+    state: string;
 
     /**
      * The relative signal strength which more or less can be used to determine how far away the peripheral is.
@@ -80,6 +91,8 @@ declare module "nativescript-bluetooth" {
     manufacturerId?: number;
 
     manufacturerData?: ArrayBuffer;
+
+    connectable: boolean;
   }
 
   /**
@@ -165,6 +178,7 @@ declare module "nativescript-bluetooth" {
    * Response object for the read function
    */
   export interface ReadResult {
+    type: string;
     value: any;
     valueRaw: any;
     characteristicUUID: string;

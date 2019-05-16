@@ -253,13 +253,42 @@ var CBCentralManagerDelegateImpl = (function (_super) {
           manufacturerData = Bluetooth._toArrayBuffer(advData.objectForKey(CBAdvertisementDataManufacturerDataKey).subdataWithRange(NSMakeRange(2, advData.objectForKey(CBAdvertisementDataManufacturerDataKey).length - 2)));
         }
 
+        console.log('advData', advData);
+        console.log('peripheral', peripheral);
+
+        var services = {};
+        var serviceUUIDsKeys = advData.objectForKey(CBAdvertisementDataServiceUUIDsKey);
+        if (serviceUUIDsKeys) {
+          console.log('serviceUUIDsKeys', serviceUUIDsKeys);
+          for (var key in serviceUUIDsKeys) {
+            console.log('serviceUUIDsKeys @@', key);
+          }
+        }
+
+        var txPowerLevelKey = advData.objectForKey(CBAdvertisementDataTxPowerLevelKey);
+        if (txPowerLevelKey) {
+          console.log('txPowerLevelKey', txPowerLevelKey);
+        }
+
+        var localNameKey = advData.objectForKey(CBAdvertisementDataLocalNameKey);
+        if (localNameKey) {
+          console.log('localNameKey', localNameKey);
+        }
+
+        var serviceDataKey = advData.objectForKey(CBAdvertisementDataServiceDataKey);
+        if (serviceDataKey) {
+          console.log('serviceDataKey', serviceDataKey);
+        }
+
         Bluetooth._state.onDiscovered({
           UUID: peripheral.identifier.UUIDString,
           name: peripheral.name,
           RSSI: RSSI,
           state: Bluetooth._getState(peripheral.state),
           manufacturerId: manufacturerId,
-          manufacturerData: manufacturerData
+          manufacturerData: manufacturerData,
+          connectable: advData.objectForKey(CBAdvertisementDataIsConnectable),
+          services: services,
         });
       } else {
         console.log("----- !!! No onDiscovered callback specified");

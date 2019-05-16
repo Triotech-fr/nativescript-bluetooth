@@ -10,19 +10,6 @@
 [twitter-image]:https://img.shields.io/twitter/follow/eddyverbruggen.svg?style=social&label=Follow%20me
 [twitter-url]:https://twitter.com/eddyverbruggen
 
-### Use when you want to
-* scan for Bluetooth LE / Smart peripherals,
-* connect to those peripherals,
-* read values of a characteristic,
-* write new values to them,
-* get notified when the value of a characteristic changes.
-
-### Supported platforms
-* iOS
-* Android 4.3 and up
-
-Note that a simulator can't be used to test conneting to Bluetooth peripherals.
-
 ## Installation
 From the command prompt go to your app's root folder and execute:
 
@@ -124,6 +111,11 @@ A few of the optional params require a bit of explanation:
 
 #### seconds
 Scanning for peripherals drains the battery quickly, so you better not scan any longer than necessary. If a peripheral is in range and not engaged in another connection it usually pops up in under a second. If you don't pass in a number of seconds you will need to manually call `stopScanning`.
+
+#### skipPermissionCheck
+Set this to true if you don't want the plugin to check (and request) the required Bluetooth permissions.
+Particularly useful if you're running this function on a non-UI thread (ie. a Worker).
+Relvant on Android only.
 
 #### serviceUUIDs
 It's inefficient to scan for all available Bluetooth peripherals and have them report all services they offer.
@@ -318,6 +310,7 @@ The app using bluetooth can generate many console.log messages - one for each ch
 This can be reduced by calling `bluetooth.setCharacteristicLogging(false)`.
 
 ## Changelog
+* 1.3.0  Added `manufacturerId` and `manufacturerData` to the `onDiscovered` callback of `startScanning`.
 * 1.2.0  Automatic permission handling on Android. Added `enable` so your app can now switch on Bluetooth if the user allows it (Android only).
 * 1.1.5  Added `setCharacteristicLogging` to reduce logging
 * 1.1.4  TypeScript fix and TS definition fix in package.json
